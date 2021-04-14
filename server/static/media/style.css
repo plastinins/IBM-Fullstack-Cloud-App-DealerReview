@@ -1,0 +1,43 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  background-color: #333;
+}
+
+body {
+  display: flex;
+  color: #fff;
+}
+
+.navbar-brand {
+  font-size: 2rem;  
+}
+
+.nav-link {
+  padding: .25rem 0;
+  font-size: 1.5rem;
+  color: #eee;
+  border-bottom: .25rem solid transparent;
+  transition: border-bottom-color 0.3s linear, color 0.3s linear;
+}
+
+.nav-link:hover {
+    color: #fff;
+    border-bottom-color: #fff;
+}
+
+@media (max-width: 400px) {
+    .navbar {
+        justify-content: center; 
+    }
+}
+
+@media (min-width: 401px) {
+    .navbar-brand {
+        margin-right: auto;
+    }
+}
