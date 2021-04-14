@@ -1,11 +1,11 @@
-  applications:
-  - name: dealerreiew
+applications:
+  - name: dealerreview
     routes:
-      - route: host.domain
+      - route: dealerreview.eu-gb.mybluemix.net
     memory: 128M
     buildpack: python_buildpack
-  - name: dealerreiew-nginx
+  - name: dealerreview-nginx
     routes:
-      - route: host.domain/static
+      - route: dealerreview.eu-gb.mybluemix.net/static
     memory: 128M
     buildpack: staticfile_buildpack
