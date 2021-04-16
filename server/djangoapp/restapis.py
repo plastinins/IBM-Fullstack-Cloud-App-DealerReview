@@ -28,8 +28,19 @@ def get_request(url, api_key=None, **kwargs):
 
 
 
-# Create a `post_request` to make HTTP POST requests
-# e.g., response = requests.post(url, params=kwargs, json=payload)
+def post_request(url, json_payload, **kwargs):
+    print("Payload: ", json_payload, ". Params: ", kwargs)
+    print("POST TO {} ".format(url))
+    try:
+        response = requests.post(url, headers={'Content-Type': 'application/json'},
+                                json=json_payload, params=kwargs)
+    except:
+        # If any error occurs
+        print("Network exception occurred")
+    status_code = response.status_code
+    print("With status {} ".format(status_code))
+    json_data = json.loads(response.text)
+    return json_data
 
 
 # Method to get dealers from a cloud function

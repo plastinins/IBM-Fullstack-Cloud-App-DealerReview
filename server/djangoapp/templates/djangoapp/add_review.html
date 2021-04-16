@@ -1,16 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    {% load static %}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
-
-</head>
-    <body>
-    <!--Add review form here -->
-    </body>
-</html>
+{% extends 'djangoapp/page-template.html' %}
+{% block head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css"
+    rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    {% if user.is_authenticated %}
+    <h1>Create Review</h1>
+    <form action="{% url 'djangoapp:addreview' dealer_id %}" method="post">
+    {% csrf_token %}
+    <div class="row justify-content-center">
+        <div class="col-6 text-left">
+        <div class="form-group">
+            <label for="userNameInput">Your Name</label>
+            <input type="text" class="form-control" id="userNameInput" placeholder="Enter Your Name..." name="newreview_name" value="{{user.last_name}} {{user.first_name}}" required>
+        </div>
+        <div class="form-group">
+            <label for="reviewInput">Review</label>
+            <textarea class="form-control" id="reviewInput" placeholder="Enter Review..." name="newreview_review" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="purchaseInput">Car Is Purchased</label>
+            <input type="checkbox" class="form-control" id="purchaseInput" name="newreview_purchase">
+        </div>
+        <div class="form-group">
+            <label for="purchaseDateInput">Purchase Date</label>
+            <input type="date" class="form-control" id="purchaseDateInput" name="newreview_purchase_date">
+        </div>
+        <div class="form-group">
+            <label for="carMakeInput">Car Make</label>
+            <input type="text" class="form-control" id="carMakeInput" name="newreview_car_make">
+        </div>
+        <div class="form-group">
+            <label for="carModelInput">Car Model</label>
+            <input type="text" class="form-control" id="carModelInput" name="newreview_car_model">
+        </div>
+        <div class="form-group">
+            <label for="carYearInput">Car Year</label>
+            <input type="date" class="form-control" id="carYearInput" name="newreview_car_year">
+        </div>                
+        {% if error_message %}
+        <div class="alert alert-warning my-3">
+            {{ error_message }}
+        </div>
+        {% elif success_message %}
+        <div class="alert alert-success my-3">
+            {{ success_message }}
+        </div>
+        {% endif %}
+        <button class="btn btn-primary" type="submit">Save review</button>
+    </div>
+    </div>
+    </form>
+    {% else %}
+    <h1>Who are you?</h1>
+    <p class="lead">You are not authenticated, that's why you see this message.</p>
+    <p class="lead">Login and you will be able to add review.</p>
+    {% endif %}
+</div>
+{% endblock %}
