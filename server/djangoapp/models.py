@@ -84,5 +84,19 @@ class CarDealer:
         return "Dealer name: " + self.full_name
 
 
+class DealerReview:
+    def __init__(self, dealer_id, id, name, purchase, review, make="", model="", year=None, purchase_date=None):
+        self.make = make
+        self.model = model
+        self.year = year
+        self.dealer_id = dealer_id
+        self.id = id
+        self.name = name
+        self.purchase = purchase
+        self.purchase_date = purchase_date
+        self.review = review
+        # Sentiment attribute will be determined by Watson NLU service. It could be positive, neutral, or negative
+        self.sentiment = ""
 
-# <HINT> Create a plain Python class `DealerReview` to hold review data
+    def __str__(self):
+        return "Customer name: " + self.name
