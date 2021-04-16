@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
 from .restapis import get_dealers_from_cf, get_dealer_by_id_from_cf, get_dealer_reviews_from_cf
+from .local_settings import FAAS_API_DEALERSHIP_URL, FAAS_API_REVIEW_URL
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -85,7 +86,7 @@ def registration_request(request):
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
-        url = "https://758e0b68.eu-gb.apigw.appdomain.cloud/api/dealership"
+        url = FAAS_API_DEALERSHIP_URL
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
         context['dealer_list'] = dealerships
@@ -96,7 +97,7 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     context = {}
     if request.method == "GET":
-        url = "https://758e0b68.eu-gb.apigw.appdomain.cloud/api/review"
+        url = FAAS_API_REVIEW_URL
         # Get reviews from the URL
         reviews = get_dealer_reviews_from_cf(url, dealer_id)
         context['review_list'] = reviews

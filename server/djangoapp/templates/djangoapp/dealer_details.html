@@ -9,13 +9,14 @@
 {% if review_list %}
 <div class="container-fluid">
     {% for review in review_list %}
-<div class="card text-dark bg-light mb-3 text-left">
-  <div class="card-header">{{review.name}}</div>
-  <div class="card-body">
-    <h5 class="card-title">{{review.name}}</h5>
-    <p class="card-text">{{review.review}}</p>
-  </div>
-</div>
+    <div class="card text-dark bg-light mb-3 text-left">
+        <div class="card-header">{{review.name}}</div>
+        <div class="card-body">
+            <h5 class="card-title">{{review.name}}</h5>
+            <p class="card-text">{{review.review}}</p>
+            <p class="card-text">IBM Watson Analysis: {{review.sentiment}}</p>
+        </div>
+    </div>
     {% endfor %}
 </div>
 {% else %}

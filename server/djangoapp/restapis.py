@@ -1,15 +1,22 @@
 import requests
 import json
+import urllib
+import datetime
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
+from .local_settings import NLU_API_KEY, NLU_API_URL
 
 
-def get_request(url, **kwargs):
+def get_request(url, api_key=None, **kwargs):
     print(kwargs)
     print("GET from {} ".format(url))
     try:
         # Call get method of requests library with URL and parameters
-        response = requests.get(url, headers={'Content-Type': 'application/json'},
+        if api_key:
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
+                                    params=kwargs, auth=HTTPBasicAuth('apikey', api_key))
+        else:
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
     except:
         # If any error occurs
@@ -89,14 +96,22 @@ def get_dealer_reviews_from_cf(url, dealer_id):
                 review_obj = DealerReview(dealer_id=review["dealership"], 
                                     id=review["id"], name=review["name"], purchase=review["purchase"], 
                                     review=review["review"])
+            review_obj.sentiment = analyze_review_sentiments(review_obj.review)
             results.append(review_obj)
 
     return results
 
-# Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
-# def analyze_review_sentiments(text):
-# - Call get_request() with specified arguments
-# - Get the returned sentiment label such as Positive or Negative
-
-
+# Method to call Watson NLU and analyze text
+def analyze_review_sentiments(text):
+    result = "Not checked"
+    try:
+        json_result = get_request(url=NLU_API_URL, 
+                        api_key=NLU_API_KEY, 
+                        version="2021-03-25",
+                        features="sentiment",
+                        text=urllib.parse.quote_plus(text))
+        result = json_result["sentiment"]["document"]["label"]
+    
+    finally:
+        return result
 
