@@ -1,8 +1,5 @@
 {% extends 'djangoapp/page-template.html' %}
 {% block head %}
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css"
-    rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
 {% endblock %}
 {% block content %}
 <div class="container-fluid">
@@ -18,28 +15,26 @@
         </div>
         <div class="form-group">
             <label for="reviewInput">Review</label>
-            <textarea class="form-control" id="reviewInput" placeholder="Enter Review..." name="newreview_review" required></textarea>
+            <textarea class="form-control" id="reviewInput" placeholder="Enter Review..." name="newreview_review" rows="2" required></textarea>
         </div>
         <div class="form-group">
-            <label for="purchaseInput">Car Is Purchased</label>
-            <input type="checkbox" class="form-control" id="purchaseInput" name="newreview_purchase">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="purchaseInput" name="newreview_purchase">
+                <label class="custom-control-label" for="purchaseInput">Car Was Purchased</label>
+            </div>
         </div>
         <div class="form-group">
             <label for="purchaseDateInput">Purchase Date</label>
             <input type="date" class="form-control" id="purchaseDateInput" name="newreview_purchase_date">
         </div>
         <div class="form-group">
-            <label for="carMakeInput">Car Make</label>
-            <input type="text" class="form-control" id="carMakeInput" name="newreview_car_make">
+            <label for="carInput">Car</label>
+            <select id="carInput" class="custom-select" name="newreview_car" required>
+                {% for car in cars %}
+                    <option value={{car.id}}>{{car.make.name}} {{car.name}} {{ car.year|date:"Y" }}</option>
+                {% endfor %}
+            </select>
         </div>
-        <div class="form-group">
-            <label for="carModelInput">Car Model</label>
-            <input type="text" class="form-control" id="carModelInput" name="newreview_car_model">
-        </div>
-        <div class="form-group">
-            <label for="carYearInput">Car Year</label>
-            <input type="date" class="form-control" id="carYearInput" name="newreview_car_year">
-        </div>                
         {% if error_message %}
         <div class="alert alert-warning my-3">
             {{ error_message }}
@@ -59,4 +54,6 @@
     <p class="lead">Login and you will be able to add review.</p>
     {% endif %}
 </div>
+{% endblock %}
+{% block afterbody %}
 {% endblock %}

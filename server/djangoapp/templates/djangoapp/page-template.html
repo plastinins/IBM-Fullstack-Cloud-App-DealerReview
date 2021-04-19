@@ -74,7 +74,7 @@
         </main>
 
         <footer class="container-fluid mt-auto">
-            <div class="row">
+            <div class="row my-3">
                 <div class="col-3">
                     <a class="text-white" href="{% url 'djangoapp:about' %}">About Us</a>
                 </div>
@@ -88,5 +88,6 @@
         </footer>
     </div>
 </body>
-
+{% block afterbody %}
+{% endblock %}
 </html>

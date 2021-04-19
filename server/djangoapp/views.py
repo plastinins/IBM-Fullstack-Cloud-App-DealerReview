@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-# from .models import related models
+from .models import CarModel
 from .restapis import post_request, get_dealers_from_cf, get_dealer_by_id_from_cf, get_dealer_reviews_from_cf
 from .local_settings import FAAS_API_DEALERSHIP_URL, FAAS_API_REVIEW_URL
 from django.contrib.auth import login, logout, authenticate
@@ -97,11 +97,12 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     context = {}
     if request.method == "GET":
-        url = FAAS_API_REVIEW_URL
+        # Get dealer details by ID
+        dealer = get_dealer_by_id_from_cf(FAAS_API_DEALERSHIP_URL, dealer_id)
         # Get reviews from the URL
-        reviews = get_dealer_reviews_from_cf(url, dealer_id)
+        reviews = get_dealer_reviews_from_cf(FAAS_API_REVIEW_URL, dealer_id)
         context['review_list'] = reviews
-        context['dealer_id'] = dealer_id
+        context['dealer'] = dealer
         return render(request, 'djangoapp/dealer_details.html', context)
 
 
@@ -109,7 +110,9 @@ def get_dealer_details(request, dealer_id):
 def add_review(request, dealer_id):
     context = {}
     if request.method == "GET":
+        cars = CarModel.objects.filter(dealer_id=dealer_id)
         context["dealer_id"] = dealer_id
+        context["cars"] = cars
         return render(request, 'djangoapp/add_review.html', context)
 
     if request.method == "POST":
@@ -126,16 +129,25 @@ def add_review(request, dealer_id):
         review["review"] = request.POST["newreview_review"]
         review["purchase"] = request.POST["newreview_purchase"]
         review["purchase_date"] = request.POST["newreview_purchase_date"]
-        review["car_make"] = request.POST["newreview_car_make"]
-        review["car_model"] = request.POST["newreview_car_model"]
-        review["car_year"] = request.POST["newreview_car_year"]
+        car = get_object_or_404(CarModel, pk=request.POST["newreview_car"])
+        if car:
+            review["car_make"] = car.make.name #request.POST["newreview_car_make"]
+            review["car_model"] = car.name #request.POST["newreview_car_model"]
+            review["car_year"] = car.year.strftime("%Y") #request.POST["newreview_car_year"]
+        else:
+            review["car_make"] = ""
+            review["car_model"] = ""
+            review["car_year"] = ""
         json_payload = {}
         json_payload["review"] = review
         json_result = post_request(FAAS_API_REVIEW_URL, json_payload, dealerId=dealer_id)
         print("POST request result: ", json_result)
         if json_result["status"] == 200:
-            context["success_message"] = "Thank you for your review!"
+            #context["success_message"] = "Thank you for your review!"
+            return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
         else:
             context["error_message"] = "Error: review was not saved."
-        context["dealer_id"] = dealer_id
-        return render(request, 'djangoapp/add_review.html', context)
+            cars = CarModel.objects.filter(dealer_id=dealer_id)
+            context["dealer_id"] = dealer_id
+            context["cars"] = cars
+            return render(request, 'djangoapp/add_review.html', context)

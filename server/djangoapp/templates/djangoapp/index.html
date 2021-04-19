@@ -7,26 +7,26 @@
 {% endblock %}
 {% block content %}
 {% if dealer_list %}
-<table class="table table-striped table-dark">
+<table id="table" class="table table-striped table-dark" data-filter-control="true">
     <thead>
     <tr>
-        <th>#</th>
-        <th>State</th>
-        <th>Name</th>
-        <th>City</th>
-        <th>Address</th>
-        <th>Link</th>
+        <th data-field="id">#</th>
+        <th data-field="name">Dealer Name</th>
+        <th data-field="city">City</th>
+        <th data-field="address">Address</th>
+        <th data-field="zip">Zip</th>        
+        <th data-field="state" data-filter-control="select">State</th>
     </tr>
     </thead>
     <tbody>
     {% for dealer in dealer_list %}
     <tr>
         <td>{{ dealer.id }}</td>
-        <td>{{ dealer.state }}</td>
-        <td>{{ dealer.name }}</td>
+        <td><a class="text-warning" href="{% url 'djangoapp:dealer_details' dealer.id %}">{{ dealer.full_name }}</a></td>        
         <td>{{ dealer.city }}</td>
-        <td>{{ dealer.address}}</td>
-        <td><a href="https://www.google.com/maps/search/?api=1&query={{ dealer.lat }},{{ dealer.long }}">Show On Google Maps</a></td>
+        <td>{{ dealer.address}}</td>               
+        <td>{{ dealer.zip}}</td>
+        <td>{{ dealer.state }}</td>
     </tr>
     {% endfor %}
     </tbody>
@@ -34,4 +34,11 @@
 {% else %}
 <h1>Hello! We do not have any dealer at moment</h1>
 {% endif %}
+{% endblock %}
+{% block afterbody %}
+<script>
+  $(function() {
+    $('#table').bootstrapTable()
+  })
+</script>
 {% endblock %}
